@@ -2,7 +2,7 @@ name: Schedule Check-in/Check-out
 
 on:
   schedule:
-    - cron: '58 16 * * *'
+    - cron: '*/5 * * * *'
 
 jobs:
   check_in_out:
