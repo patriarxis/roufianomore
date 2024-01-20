@@ -2,7 +2,7 @@ name: Schedule Check-in/Check-out
 
 on:
   schedule:
-    - cron: '42 16 * * *'  # Run every day at 16:38 UTC
+    - cron: '58 16 * * *'
 
 jobs:
   check_in_out:
@@ -28,4 +28,3 @@ jobs:
         GOOGLE_CALENDAR_URL: ${{ secrets.GOOGLE_CALENDAR_URL }}
         USERNAME: ${{ secrets.USERNAME }}
         PASSWORD: ${{ secrets.PASSWORD }}
-
