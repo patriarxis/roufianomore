@@ -2,7 +2,7 @@ name: Schedule Check-in/Check-out
 
 on:
   schedule:
-    - cron: '35 17 * * *'  # Run every weekday at 9:00 UTC
+    - cron: '37 16 * * *'  # Run every weekday at 9:00 UTC
 
 jobs:
   check_in_out:
