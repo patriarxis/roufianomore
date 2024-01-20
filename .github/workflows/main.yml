@@ -1,0 +1,31 @@
+name: Schedule Check-in/Check-out
+
+on:
+  schedule:
+    - cron: '35 17 * * *'  # Run every weekday at 9:00 UTC
+
+jobs:
+  check_in_out:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run script
+      run: python src/ical_event_handler.py
+      env:
+        GOOGLE_CALENDAR_URL: ${{ secrets.GOOGLE_CALENDAR_URL }}
+        USERNAME: ${{ secrets.USERNAME }}
+        PASSWORD: ${{ secrets.PASSWORD }}
+
