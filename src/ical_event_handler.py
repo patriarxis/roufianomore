@@ -1,3 +1,4 @@
+import time
 import arrow
 from ics import Calendar
 import requests
@@ -38,8 +39,9 @@ def wait_and_trigger(event, check_type):
         wait_time = (event.begin - current_time).total_seconds()
         if wait_time > 0:
             time.sleep(wait_time)
+            main(check_type)
         else:
-            print(f"{event.name} event is already in progress.")
+            print(f"{check_type} event passed.")
     else:
         print("No events found for today.")
 
