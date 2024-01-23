@@ -37,8 +37,7 @@ def wait_and_trigger(event, check_type):
         current_time = arrow.now(event.begin.tzinfo)
         wait_time = (event.begin - current_time).total_seconds()
         if wait_time > 0:
-            # time.sleep(wait_time)
-            main(check_type)
+            time.sleep(wait_time)
         else:
             print(f"{event.name} event is already in progress.")
     else:
@@ -48,4 +47,4 @@ if __name__ == "__main__":
     today_checkin, today_checkout = get_today_events()
     
     wait_and_trigger(today_checkin, "Checkin")
-    # wait_and_trigger(today_checkout, "Checkout")
+    wait_and_trigger(today_checkout, "Checkout")
