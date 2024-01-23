@@ -13,6 +13,10 @@ USERNAME = os.getenv("USERNAME")
 PASSWORD = os.getenv("PASSWORD")
 LANG_PAYLOAD = {'SelectedLang': 'el'}
 
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+CERTIFICATE = os.path.join(SCRIPT_DIR, "softone-gr-chain.pem")
+CERTIFICATE = os.path.abspath(CERTIFICATE)
+
 logging.basicConfig(level=logging.INFO)
 
 def login(session):
@@ -36,7 +40,7 @@ def login(session):
     }
     
     try:
-        login_page_response = session.get(LOGIN_URL, headers=login_page_headers, verify=False)
+        login_page_response = session.get(LOGIN_URL, headers=login_page_headers, verify=CERTIFICATE)
         login_page_response.raise_for_status()
 
         soup = BeautifulSoup(login_page_response.text, 'html.parser')
@@ -75,7 +79,7 @@ def login(session):
     }
     
     try:
-        response = session.post(LOGIN_URL_HANDLER, data={**LANG_PAYLOAD, **credentials_payload}, headers=login_headers, verify=False)
+        response = session.post(LOGIN_URL_HANDLER, data={**LANG_PAYLOAD, **credentials_payload}, headers=login_headers, verify=CERTIFICATE)
         response.raise_for_status()
     except requests.RequestException as e:
         logging.error(f"Error during login request: {e}")
@@ -111,7 +115,7 @@ def check_in_out(session, check_type, token):
     }
     
     try:
-        response = session.post(check_url, data={**LANG_PAYLOAD, **data_payload}, headers=check_in_out_headers, verify=False)
+        response = session.post(check_url, data={**LANG_PAYLOAD, **data_payload}, headers=check_in_out_headers,  verify=CERTIFICATE)
         response.raise_for_status()
         return response.status_code
     except requests.RequestException as e:
@@ -121,8 +125,6 @@ def check_in_out(session, check_type, token):
 def main(check_type):
     session = requests.Session()
     login_response = login(session)
-    
-    print(login_response)
     
     if login_response.status_code == 200:
         soup = BeautifulSoup(login_response.text, 'html.parser')
