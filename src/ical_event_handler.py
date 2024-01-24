@@ -25,6 +25,8 @@ def get_today_events():
     today_checkin = None
     today_checkout = None
 
+    print(events)
+
     for event in events:
         if today == event.begin.date() and event.name.lower() == "checkin":
             today_checkin = event
