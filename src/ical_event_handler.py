@@ -20,25 +20,29 @@ def get_calendar_events(ical_url):
     return calendar
 
 def get_recurrences_from_event(event, start_date, end_date):
-    if 'RRULE' in event:
-        rule = rrulestr(event['RRULE'].to_ical().decode())
-        return rule.between(start_date, end_date)
-    else:
-        return [event.decoded('DTSTART')] if start_date.replace(tzinfo=TZ) <= event.decoded('DTSTART') < end_date.replace(tzinfo=TZ) else []
+    if not 'RRULE' in event:
+        return []
+    
+    dtstart = event.get('DTSTART').dt.astimezone(TZ)
+    rule = rrulestr(event['RRULE'].to_ical().decode(), dtstart=dtstart)
+    return [dt for dt in rule.between(start_date, end_date)]
 
 def get_non_recurrences_from_event(event, start_date, end_date):
-    return [event.decoded('DTSTART')] if 'DTSTART' in event and start_date.replace(tzinfo=TZ) <= event.decoded('DTSTART') < end_date.replace(tzinfo=TZ) else []
+    dtstart = event.get('DTSTART').dt.astimezone(TZ)
+    return [dtstart] if 'DTSTART' in event and start_date <= dtstart < end_date else []
 
-def get_today_events(calendar):
-    today = datetime.now()
+def get_todays_events(calendar):
+    today = datetime.now().astimezone(TZ)
+    tommorow = today + timedelta(days=1)
+    tommorow = tommorow.replace(hour=0, minute=0, second=1, microsecond=0)
 
     today_checkin = None
     today_checkout = None
 
     for component in calendar.walk():
         if component.name == "VEVENT":
-            recurrences = get_recurrences_from_event(component, today, today + timedelta(days=1))
-            non_recurrences = get_non_recurrences_from_event(component, today, today + timedelta(days=1))
+            recurrences = get_recurrences_from_event(component, today, tommorow)
+            non_recurrences = get_non_recurrences_from_event(component, today, tommorow)
 
             for occurrence in recurrences + non_recurrences:
                 if 'EXDATE' in component and occurrence.date() in component['EXDATE']:
@@ -49,9 +53,7 @@ def get_today_events(calendar):
                 event.add('DTEND', occurrence + (component.decoded('DTEND') - component.decoded('DTSTART')))
                 event.add('SUMMARY', component.get('SUMMARY'))
                 
-                tommorow = today + timedelta(days=1)
-
-                if today.replace(tzinfo=TZ) <= occurrence.replace(tzinfo=TZ) < tommorow.replace(tzinfo=TZ):
+                if today.date() == occurrence.date():
                     summary_lower = event.get('SUMMARY', '').lower()
                     if summary_lower == "checkin":
                         today_checkin = event
@@ -62,8 +64,8 @@ def get_today_events(calendar):
 
 def wait_and_trigger(event, check_type):
     if event:
-        current_time = event.decoded('DTSTART')
-        wait_time = (current_time - datetime.utcnow()).total_seconds()
+        current_time = event.get('DTSTART').dt
+        wait_time = (current_time - datetime.utcnow().astimezone(TZ)).total_seconds()
         
         if wait_time > 0:
             time.sleep(wait_time)
@@ -71,13 +73,13 @@ def wait_and_trigger(event, check_type):
         else:
             print(f"{check_type} event passed.")
     else:
-        print("No events found for today.")
+        print("Event doesn't exist.")
 
 if __name__ == "__main__":
     ical_url = os.getenv("GOOGLE_CALENDAR_URL")
     calendar = get_calendar_events(ical_url)
 
-    today_checkin, today_checkout = get_today_events(calendar)
+    today_checkin, today_checkout = get_todays_events(calendar)
 
     print(today_checkin, today_checkout)
 
