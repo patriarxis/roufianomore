@@ -36,9 +36,6 @@ def get_todays_events(calendar):
     tommorow = today + timedelta(days=1)
     tommorow = tommorow.replace(hour=0, minute=0, second=1, microsecond=0)
 
-    today_checkin = None
-    today_checkout = None
-
     for component in calendar.walk():
         if component.name == "VEVENT":
             recurrences = get_recurrences_from_event(component, today, tommorow)
@@ -56,11 +53,11 @@ def get_todays_events(calendar):
                 if today.date() == occurrence.date():
                     summary_lower = event.get('SUMMARY', '').lower()
                     if summary_lower == "checkin":
-                        today_checkin = event
+                        return event, "Checkin"
                     elif summary_lower == "checkout":
-                        today_checkout = event
+                        return event, "Checkout"
 
-    return today_checkin, today_checkout
+    return None, None
 
 def wait_and_trigger(event, check_type):
     if event:
@@ -79,9 +76,7 @@ if __name__ == "__main__":
     ical_url = os.getenv("GOOGLE_CALENDAR_URL")
     calendar = get_calendar_events(ical_url)
 
-    today_checkin, today_checkout = get_todays_events(calendar)
+    event, check_type = get_todays_events(calendar)
 
-    print(today_checkin, today_checkout)
-
-    wait_and_trigger(today_checkin, "Checkin")
-    wait_and_trigger(today_checkout, "Checkout")
+    if event and check_type:
+        wait_and_trigger(event, check_type)
