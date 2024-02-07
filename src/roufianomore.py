@@ -6,9 +6,11 @@ import os
 
 load_dotenv()
 
-LOGIN_URL = 'https://ergani.softone.gr/Login/flexcar'
-LOGIN_URL_HANDLER = 'https://ergani.softone.gr/Login/flexcar?handler=Login'
-CHECK_IN_OUT_URL = 'https://ergani.softone.gr/CheckIn/flexcar'
+COMPANY = os.getenv("COMPANY")
+BASE_URL = 'https://ergani.softone.gr'
+LOGIN_URL = f"{BASE_URL}/Login/{COMPANY}"
+LOGIN_URL_HANDLER = f"{BASE_URL}/Login/{COMPANY}?handler=Login"
+CHECK_IN_OUT_URL = f"{BASE_URL}/CheckIn/{COMPANY}"
 USERNAME = os.getenv("USERNAME")
 PASSWORD = os.getenv("PASSWORD")
 LANG_PAYLOAD = {'SelectedLang': 'el'}
@@ -25,7 +27,7 @@ def login(session):
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
         'Accept-Language': 'en-US,en;q=0.5',
         'Accept-Encoding': 'gzip, deflate, br',
-        'Referer': 'https://ergani.softone.gr/Login/flexcar',
+        'Referer': LOGIN_URL,
         'Cache-Control': 'no-cache',
         'DNT': '1',
         'Pragma': 'no-cache',
@@ -58,8 +60,8 @@ def login(session):
         'Cookie': '; '.join([f'{name}={value}' for name, value in session.cookies.items()]),
         'DNT': '1',
         'Host': 'ergani.softone.gr',
-        'Origin': 'https://ergani.softone.gr',
-        'Referer': 'https://ergani.softone.gr/Login/flexcar',
+        'Origin': BASE_URL,
+        'Referer': LOGIN_URL,
         'Sec-Fetch-Dest': 'document',
         'Sec-Fetch-Mode': 'navigate',
         'Sec-Fetch-Site': 'same-origin',
@@ -93,9 +95,9 @@ def check_in_out(session, check_type, token):
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
         'Accept-Language': 'en-US,en;q=0.5',
         'Accept-Encoding': 'gzip, deflate, br',
-        'Referer': 'https://ergani.softone.gr/CheckIn/flexcar',
+        'Referer': CHECK_IN_OUT_URL,
         'Content-Type': 'application/x-www-form-urlencoded',
-        'Origin': 'https://ergani.softone.gr',
+        'Origin': BASE_URL,
         'DNT': '1',
         'Connection': 'keep-alive',
         'Cookie': '; '.join([f'{name}={value}' for name, value in session.cookies.items()]),
