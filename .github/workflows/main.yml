@@ -27,5 +27,6 @@ jobs:
       run: python src/ical_event_handler.py
       env:
         GOOGLE_CALENDAR_URL: ${{ secrets.GOOGLE_CALENDAR_URL }}
+        COMPANY: ${{ secrets.COMPANY }}
         USERNAME: ${{ secrets.USERNAME }}
         PASSWORD: ${{ secrets.PASSWORD }}
