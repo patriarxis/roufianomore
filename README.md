@@ -51,6 +51,7 @@ Follow this process to get your own script automation up and running.
 
 2. **Set Credentials:**
    - Create GitHub secrets for your SoftOne platform credentials:
+     - `COMPANY`: The Company you work for.
      - `USERNAME`: Your SoftOne username.
      - `PASSWORD`: Your SoftOne password.
 
