@@ -3,9 +3,7 @@
 
 Automate your daily check-in and check-out in Erganis. This script monitors your Google Calendar events for the day and triggers actions on the Erganis platform accordingly.
 
-> **Current Status**
-> 
-> [![Schedule Check-in/Check-out](https://github.com/patriarxis/roufianomore/actions/workflows/main.yml/badge.svg)](https://github.com/patriarxis/roufianomore/actions/workflows/main.yml)
+[![Schedule Check-in/Check-out](https://github.com/patriarxis/roufianomore/actions/workflows/main.yml/badge.svg)](https://github.com/patriarxis/roufianomore/actions/workflows/main.yml)
 
 ## Table of Contents
 
