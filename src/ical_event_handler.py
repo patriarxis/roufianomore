@@ -31,6 +31,17 @@ def get_non_recurrences_from_event(event, start_date, end_date):
     dtstart = event.get('DTSTART').dt.astimezone(TZ)
     return [dtstart] if 'DTSTART' in event and start_date <= dtstart < end_date else []
 
+def is_occurrence_excluded(occurrence, exdates):
+    exdate_list = exdates if isinstance(exdates, list) else [exdates]
+
+    for exdate in exdate_list:
+        exdate_str = exdate.to_ical().decode('utf-8')
+        exdate_datetime = datetime.strptime(exdate_str, '%Y%m%dT%H%M%S')
+        if occurrence.date() == exdate_datetime.date():
+            return True
+
+    return False
+
 def get_todays_events(calendar):
     today = datetime.now().astimezone(TZ)
     tommorow = today + timedelta(days=1)
@@ -42,7 +53,7 @@ def get_todays_events(calendar):
             non_recurrences = get_non_recurrences_from_event(component, today, tommorow)
 
             for occurrence in recurrences + non_recurrences:
-                if 'EXDATE' in component and occurrence.date() in component['EXDATE']:
+                if 'EXDATE' in component and is_occurrence_excluded(occurrence, component['EXDATE']):
                     continue
                 
                 event = Event()
