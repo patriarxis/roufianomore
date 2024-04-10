@@ -1,5 +1,5 @@
 # Roufianomore
-**_An automation script for Erganis check-in/check-out "roufianos" system._**
+**_An automation script for Erganis check-in/check-out "roufianos" system_**
 
 Automate your daily check-in and check-out in Erganis. This script monitors your Google Calendar events for the day and triggers actions on the Erganis platform accordingly.
 
