@@ -76,6 +76,7 @@ def wait_and_trigger(event, check_type):
         wait_time = (current_time - datetime.utcnow().astimezone(TZ)).total_seconds()
         
         if wait_time > 0:
+            print(event, check_type, wait_time)
             time.sleep(wait_time)
             main(check_type)
         else:
